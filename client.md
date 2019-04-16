@@ -17,6 +17,7 @@ FSP的基本原理就是仿照TCP的ACK/SEQ重传机制，实现了传输的可�
 
 ### 帧同步技术原理
 客户端A的操作A1与客户端B的操作B1封装成OperateCmd数据发送PVP服务器。PVP服务器每66ms产生一个逻辑帧，在该帧所在时间段内收到A1和B1后，生成一个Frame数据块，在该帧时间结束时，将Frame发送给客户端A和客户端B。Frame数据块内有该帧的帧号。客户端A和B收到Frame数据后，便知道该帧内，客户端A和B都做了什么操作。然后根据收到的操作A1和B1进行游戏表现，最终呈现给玩家A和B的结果是一致的。从而实现客户端A和B的数据同步。
+![Image of deque](https://github.com/KleinParadise/pvp-sync/blob/master/pic/pic_1.jpg)
 
 ### FSP协议栈原理
 发送者维持一个发送队列，对每一次发送进行编号。每一次发送时，会将待发送的数据写入队列。然后将队列里的**数据+编号**发送给接收者。  
@@ -27,6 +28,7 @@ FSP的基本原理就是仿照TCP的ACK/SEQ重传机制，实现了传输的可�
 第4到7次发送，由于从第4次发送开始就没有收到确认编号，于是队列中包含了Data4和Data7。第7次发送后，收到确认编号6，于是将Data4至Data6从队列中删除。  
 第8次发送，队列中包含Data7和Data8。发送后收到确认编号8，从而将Data7和Data8从队列中删除。
 以上关键点是，发送者未收到确认编号，并不一直等待，而是会继续下一次发送。  
+![Image of deque](https://github.com/KleinParadise/pvp-sync/blob/master/pic/pic_2.jpg)
 
 
 结合图1：  
